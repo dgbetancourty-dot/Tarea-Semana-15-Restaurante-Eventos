@@ -1,0 +1,16 @@
+[
+    {
+        "codigo": "POO1",
+        "nombre": "HAMBURGUESA",
+        "precio": 4.5,
+        "categoria": "COMIDA",
+        "stock": 7
+    },
+    {
+        "codigo": "P002",
+        "nombre": "Pizza",
+        "precio": 6.5,
+        "categoria": "Comida",
+        "stock": 6
+    }
+]
