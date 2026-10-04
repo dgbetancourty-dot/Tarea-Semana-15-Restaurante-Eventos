@@ -2,6 +2,7 @@
     {
         "identificacion": "1001",
         "nombre": "Dennis",
-        "correo": "dennis@gmail.com"
+        "correo": "dennis@gmail.com",
+        "contrasena": "1234"
     }
 ]

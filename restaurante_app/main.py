@@ -17,33 +17,20 @@ class Aplicacion:
         self.ventana.geometry("1000x650")
         self.ventana.minsize(900, 600)
 
-        archivo_servicio = ArchivoServicio(
-            RUTA_DATOS
-        )
+        archivo_servicio = ArchivoServicio(RUTA_DATOS)
 
-        productos_datos = (
-            archivo_servicio.cargar_productos()
-        )
+        productos_datos = archivo_servicio.cargar_productos()
+        usuarios_datos = archivo_servicio.cargar_usuarios()
+        ventas_datos = archivo_servicio.cargar_ventas()
 
-        usuarios_datos = (
-            archivo_servicio.cargar_usuarios()
-        )
-
-        ventas_datos = (
-            archivo_servicio.cargar_ventas()
-        )
-
-        self.restaurante_servicio = (
-            RestauranteServicio(
-                productos_datos,
-                usuarios_datos,
-                ventas_datos,
-                archivo_servicio
-            )
+        self.restaurante_servicio = RestauranteServicio(
+            productos_datos,
+            usuarios_datos,
+            ventas_datos,
+            archivo_servicio
         )
 
         self.vista_actual = None
-
         self.mostrar_login()
 
     def limpiar_vista(self):
@@ -74,4 +61,4 @@ class Aplicacion:
 
 if __name__ == "__main__":
     aplicacion = Aplicacion()
-    aplicacion.ejecutar()
+    aplicacion.ejecutar()

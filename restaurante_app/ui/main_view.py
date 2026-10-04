@@ -1,96 +1,75 @@
-﻿import tkinter as tk
-from tkinter import messagebox, ttk
+import tkinter as tk
 from pathlib import Path
+from tkinter import messagebox, ttk
 
 
 RUTA_ASSETS = Path(__file__).parent.parent / "assets"
 
+COLOR_FONDO = "#f2f4f7"
+COLOR_TITULO = "#1f4e78"
+
 
 class MainView:
-    def __init__(
-        self,
-        contenedor,
-        restaurante_servicio,
-        cerrar_sesion
-    ):
+    def __init__(self, contenedor, restaurante_servicio, cerrar_sesion):
         self.contenedor = contenedor
         self.restaurante_servicio = restaurante_servicio
         self.cerrar_sesion = cerrar_sesion
 
-        # Recursos visuales de la aplicación
-        self.logo_app = tk.PhotoImage(
-            file=str(RUTA_ASSETS / "logo_app.png")
-        )
-        self.icono_productos = tk.PhotoImage(
-            file=str(RUTA_ASSETS / "productos_icon.png")
-        )
-        self.icono_usuarios = tk.PhotoImage(
-            file=str(RUTA_ASSETS / "usuarios_icon.png")
-        )
-        self.icono_ventas = tk.PhotoImage(
-            file=str(RUTA_ASSETS / "ventas_icon.png")
-        )
+        # Recursos visuales (se guardan en atributos para que Tkinter
+        # no los elimine de memoria)
+        self.logo_app = self._cargar_imagen("logo_app.png")
+        self.icono_productos = self._cargar_imagen("productos_icon.png")
+        self.icono_usuarios = self._cargar_imagen("usuarios_icon.png")
+        self.icono_ventas = self._cargar_imagen("ventas_icon.png")
 
-        self.frame = tk.Frame(
-            self.contenedor,
-            bg="#f2f4f7"
-        )
+        self.frame = tk.Frame(self.contenedor, bg=COLOR_FONDO)
         self.frame.pack(fill="both", expand=True)
 
         self.crear_encabezado()
         self.crear_zona_principal()
         self.mostrar_productos()
 
+    @staticmethod
+    def _cargar_imagen(nombre):
+        return tk.PhotoImage(file=str(RUTA_ASSETS / nombre))
+
+    # =========================================================
+    # ESTRUCTURA PRINCIPAL
+    # =========================================================
+
     def crear_encabezado(self):
-        encabezado = tk.Frame(
-            self.frame,
-            bg="#1f4e78",
-            height=90
-        )
+        encabezado = tk.Frame(self.frame, bg=COLOR_TITULO, height=90)
         encabezado.pack(fill="x")
         encabezado.pack_propagate(False)
 
         tk.Label(
             encabezado,
             image=self.logo_app,
-            bg="#1f4e78"
+            bg=COLOR_TITULO
         ).pack(side="left", padx=(18, 8), pady=3)
 
-        titulo = tk.Label(
+        tk.Label(
             encabezado,
             text="SISTEMA DE RESTAURANTE",
             font=("Arial", 20, "bold"),
-            bg="#1f4e78",
+            bg=COLOR_TITULO,
             fg="white"
-        )
-        titulo.pack(side="left", padx=8, pady=18)
+        ).pack(side="left", padx=8, pady=18)
 
-        boton_cerrar = tk.Button(
+        tk.Button(
             encabezado,
             text="Cerrar sesión",
             command=self.cerrar_sesion,
             bg="#c0392b",
             fg="white",
             width=14
-        )
-        boton_cerrar.pack(
-            side="right",
-            padx=25,
-            pady=18
-        )
+        ).pack(side="right", padx=25, pady=18)
 
     def crear_zona_principal(self):
-        cuerpo = tk.Frame(
-            self.frame,
-            bg="#f2f4f7"
-        )
+        cuerpo = tk.Frame(self.frame, bg=COLOR_FONDO)
         cuerpo.pack(fill="both", expand=True)
 
-        menu = tk.Frame(
-            cuerpo,
-            bg="#d9e6f2",
-            width=180
-        )
+        menu = tk.Frame(cuerpo, bg="#d9e6f2", width=180)
         menu.pack(side="left", fill="y")
         menu.pack_propagate(False)
 
@@ -101,40 +80,24 @@ class MainView:
             bg="#d9e6f2"
         ).pack(pady=25)
 
-        tk.Button(
-            menu,
-            text="Productos",
-            image=self.icono_productos,
-            compound="left",
-            width=150,
-            anchor="w",
-            command=self.mostrar_productos
-        ).pack(pady=8)
+        opciones = [
+            ("Productos", self.icono_productos, self.mostrar_productos),
+            ("Usuarios", self.icono_usuarios, self.mostrar_usuarios),
+            ("Ventas", self.icono_ventas, self.mostrar_ventas)
+        ]
 
-        tk.Button(
-            menu,
-            text="Usuarios",
-            image=self.icono_usuarios,
-            compound="left",
-            width=150,
-            anchor="w",
-            command=self.mostrar_usuarios
-        ).pack(pady=8)
+        for texto, icono, comando in opciones:
+            tk.Button(
+                menu,
+                text=texto,
+                image=icono,
+                compound="left",
+                width=150,
+                anchor="w",
+                command=comando
+            ).pack(pady=8)
 
-        tk.Button(
-            menu,
-            text="Ventas",
-            image=self.icono_ventas,
-            compound="left",
-            width=150,
-            anchor="w",
-            command=self.mostrar_ventas
-        ).pack(pady=8)
-
-        self.frame_contenido = tk.Frame(
-            cuerpo,
-            bg="#f2f4f7"
-        )
+        self.frame_contenido = tk.Frame(cuerpo, bg=COLOR_FONDO)
         self.frame_contenido.pack(
             side="right",
             fill="both",
@@ -147,16 +110,64 @@ class MainView:
         for componente in self.frame_contenido.winfo_children():
             componente.destroy()
 
-    def mostrar_productos(self):
-        self.limpiar_contenido()
-
+    def crear_titulo(self, texto, espacio=10):
         tk.Label(
             self.frame_contenido,
-            text="GESTIÓN DE PRODUCTOS",
+            text=texto,
             font=("Arial", 17, "bold"),
-            bg="#f2f4f7",
-            fg="#1f4e78"
-        ).pack(pady=(0, 10))
+            bg=COLOR_FONDO,
+            fg=COLOR_TITULO
+        ).pack(pady=(0, espacio))
+
+    def crear_tabla(self, titulo, columnas, altura=12):
+        """Crea un Treeview con barra de desplazamiento.
+
+        columnas: lista de (clave, encabezado, ancho, alineación).
+        """
+        listado = ttk.LabelFrame(
+            self.frame_contenido,
+            text=titulo,
+            padding=10
+        )
+        listado.pack(fill="both", expand=True, pady=5)
+
+        tabla = ttk.Treeview(
+            listado,
+            columns=[clave for clave, *_ in columnas],
+            show="headings",
+            height=altura
+        )
+
+        for clave, encabezado, ancho, alineacion in columnas:
+            tabla.heading(clave, text=encabezado)
+            tabla.column(clave, width=ancho, anchor=alineacion)
+
+        barra = ttk.Scrollbar(
+            listado,
+            orient="vertical",
+            command=tabla.yview
+        )
+        tabla.configure(yscrollcommand=barra.set)
+
+        tabla.pack(side="left", fill="both", expand=True)
+        barra.pack(side="right", fill="y")
+
+        return tabla
+
+    @staticmethod
+    def llenar_tabla(tabla, filas):
+        tabla.delete(*tabla.get_children())
+
+        for fila in filas:
+            tabla.insert("", tk.END, values=fila)
+
+    # =========================================================
+    # PRODUCTOS
+    # =========================================================
+
+    def mostrar_productos(self):
+        self.limpiar_contenido()
+        self.crear_titulo("GESTIÓN DE PRODUCTOS")
 
         formulario = ttk.LabelFrame(
             self.frame_contenido,
@@ -165,164 +176,55 @@ class MainView:
         )
         formulario.pack(fill="x", pady=5)
 
-        ttk.Label(
-            formulario,
-            text="Código:"
-        ).grid(
-            row=0,
-            column=0,
-            padx=8,
-            pady=7,
-            sticky="w"
-        )
+        def etiqueta(texto, fila, columna):
+            ttk.Label(formulario, text=texto).grid(
+                row=fila, column=columna, padx=8, pady=7, sticky="w"
+            )
 
-        self.entrada_codigo = ttk.Entry(
-            formulario,
-            width=25
-        )
-        self.entrada_codigo.grid(
-            row=0,
-            column=1,
-            padx=8,
-            pady=7
-        )
+        etiqueta("Código:", 0, 0)
+        self.entrada_codigo = ttk.Entry(formulario, width=25)
+        self.entrada_codigo.grid(row=0, column=1, padx=8, pady=7)
 
-        ttk.Label(
-            formulario,
-            text="Nombre:"
-        ).grid(
-            row=0,
-            column=2,
-            padx=8,
-            pady=7,
-            sticky="w"
-        )
+        etiqueta("Nombre:", 0, 2)
+        self.entrada_nombre = ttk.Entry(formulario, width=25)
+        self.entrada_nombre.grid(row=0, column=3, padx=8, pady=7)
 
-        self.entrada_nombre = ttk.Entry(
-            formulario,
-            width=25
-        )
-        self.entrada_nombre.grid(
-            row=0,
-            column=3,
-            padx=8,
-            pady=7
-        )
+        etiqueta("Precio:", 1, 0)
+        self.entrada_precio = ttk.Entry(formulario, width=25)
+        self.entrada_precio.grid(row=1, column=1, padx=8, pady=7)
 
-        ttk.Label(
-            formulario,
-            text="Precio:"
-        ).grid(
-            row=1,
-            column=0,
-            padx=8,
-            pady=7,
-            sticky="w"
-        )
-
-        self.entrada_precio = ttk.Entry(
-            formulario,
-            width=25
-        )
-        self.entrada_precio.grid(
-            row=1,
-            column=1,
-            padx=8,
-            pady=7
-        )
-
-        ttk.Label(
-            formulario,
-            text="Categoría:"
-        ).grid(
-            row=1,
-            column=2,
-            padx=8,
-            pady=7,
-            sticky="w"
-        )
-
+        etiqueta("Categoría:", 1, 2)
         self.combo_categoria = ttk.Combobox(
             formulario,
-            values=[
-                "Comida",
-                "Bebida",
-                "Postre",
-                "Otro"
-            ],
+            values=["Comida", "Bebida", "Postre", "Otro"],
             state="readonly",
             width=22
         )
-        self.combo_categoria.grid(
-            row=1,
-            column=3,
-            padx=8,
-            pady=7
-        )
+        self.combo_categoria.grid(row=1, column=3, padx=8, pady=7)
 
-        ttk.Label(
-            formulario,
-            text="Stock:"
-        ).grid(
-            row=2,
-            column=0,
-            padx=8,
-            pady=7,
-            sticky="w"
-        )
+        etiqueta("Stock:", 2, 0)
+        self.entrada_stock = ttk.Entry(formulario, width=25)
+        self.entrada_stock.grid(row=2, column=1, padx=8, pady=7)
 
-        self.entrada_stock = ttk.Entry(
-            formulario,
-            width=25
-        )
-        self.entrada_stock.grid(
-            row=2,
-            column=1,
-            padx=8,
-            pady=7
-        )
-
-        acciones = tk.Frame(
-            self.frame_contenido,
-            bg="#f2f4f7"
-        )
+        acciones = tk.Frame(self.frame_contenido, bg=COLOR_FONDO)
         acciones.pack(fill="x", pady=10)
 
-        tk.Button(
-            acciones,
-            text="Registrar",
-            width=13,
-            bg="#27ae60",
-            fg="white",
-            command=self.registrar_producto
-        ).pack(side="left", padx=4)
+        botones = [
+            ("Registrar", "#27ae60", self.registrar_producto),
+            ("Cargar", "#2980b9", self.cargar_producto),
+            ("Actualizar", "#f39c12", self.actualizar_producto),
+            ("Eliminar", "#c0392b", self.eliminar_producto)
+        ]
 
-        tk.Button(
-            acciones,
-            text="Cargar",
-            width=13,
-            bg="#2980b9",
-            fg="white",
-            command=self.cargar_producto
-        ).pack(side="left", padx=4)
-
-        tk.Button(
-            acciones,
-            text="Actualizar",
-            width=13,
-            bg="#f39c12",
-            fg="white",
-            command=self.actualizar_producto
-        ).pack(side="left", padx=4)
-
-        tk.Button(
-            acciones,
-            text="Eliminar",
-            width=13,
-            bg="#c0392b",
-            fg="white",
-            command=self.eliminar_producto
-        ).pack(side="left", padx=4)
+        for texto, color, comando in botones:
+            tk.Button(
+                acciones,
+                text=texto,
+                width=13,
+                bg=color,
+                fg="white",
+                command=comando
+            ).pack(side="left", padx=4)
 
         tk.Button(
             acciones,
@@ -331,94 +233,16 @@ class MainView:
             command=self.limpiar_formulario
         ).pack(side="left", padx=4)
 
-        listado = ttk.LabelFrame(
-            self.frame_contenido,
-            text="Productos registrados",
-            padding=10
+        self.tabla_productos = self.crear_tabla(
+            "Productos registrados",
+            [
+                ("codigo", "Código", 90, "center"),
+                ("nombre", "Nombre", 190, "w"),
+                ("precio", "Precio", 90, "center"),
+                ("categoria", "Categoría", 120, "center"),
+                ("stock", "Stock", 80, "center")
+            ]
         )
-        listado.pack(
-            fill="both",
-            expand=True,
-            pady=5
-        )
-
-        columnas = (
-            "codigo",
-            "nombre",
-            "precio",
-            "categoria",
-            "stock"
-        )
-
-        self.tabla_productos = ttk.Treeview(
-            listado,
-            columns=columnas,
-            show="headings",
-            height=12
-        )
-
-        self.tabla_productos.heading(
-            "codigo",
-            text="Código"
-        )
-        self.tabla_productos.heading(
-            "nombre",
-            text="Nombre"
-        )
-        self.tabla_productos.heading(
-            "precio",
-            text="Precio"
-        )
-        self.tabla_productos.heading(
-            "categoria",
-            text="Categoría"
-        )
-        self.tabla_productos.heading(
-            "stock",
-            text="Stock"
-        )
-
-        self.tabla_productos.column(
-            "codigo",
-            width=90,
-            anchor="center"
-        )
-        self.tabla_productos.column(
-            "nombre",
-            width=190
-        )
-        self.tabla_productos.column(
-            "precio",
-            width=90,
-            anchor="center"
-        )
-        self.tabla_productos.column(
-            "categoria",
-            width=120,
-            anchor="center"
-        )
-        self.tabla_productos.column(
-            "stock",
-            width=80,
-            anchor="center"
-        )
-
-        barra = ttk.Scrollbar(
-            listado,
-            orient="vertical",
-            command=self.tabla_productos.yview
-        )
-
-        self.tabla_productos.configure(
-            yscrollcommand=barra.set
-        )
-
-        self.tabla_productos.pack(
-            side="left",
-            fill="both",
-            expand=True
-        )
-        barra.pack(side="right", fill="y")
 
         self.actualizar_tabla_productos()
 
@@ -432,42 +256,26 @@ class MainView:
         )
 
     def registrar_producto(self):
-        datos = self.obtener_datos_formulario()
-
         try:
             self.restaurante_servicio.registrar_producto(
-                *datos
+                *self.obtener_datos_formulario()
             )
-
-            self.actualizar_tabla_productos()
-            self.limpiar_formulario()
-
-            messagebox.showinfo(
-                "Producto",
-                "Producto registrado correctamente."
-            )
-
         except ValueError as error:
-            messagebox.showerror(
-                "Error",
-                str(error)
-            )
+            messagebox.showerror("Error", str(error))
+            return
+
+        self.actualizar_tabla_productos()
+        self.limpiar_formulario()
+        messagebox.showinfo("Producto", "Producto registrado correctamente.")
 
     def cargar_producto(self):
         codigo = self.entrada_codigo.get().strip()
 
         if not codigo:
-            messagebox.showwarning(
-                "Aviso",
-                "Ingrese el código del producto."
-            )
+            messagebox.showwarning("Aviso", "Ingrese el código del producto.")
             return
 
-        producto = (
-            self.restaurante_servicio.buscar_producto(
-                codigo
-            )
-        )
+        producto = self.restaurante_servicio.buscar_producto(codigo)
 
         if producto is None:
             messagebox.showerror(
@@ -476,97 +284,48 @@ class MainView:
             )
             return
 
-        self.entrada_codigo.delete(0, tk.END)
-        self.entrada_codigo.insert(
-            0,
-            producto.codigo
-        )
+        self.limpiar_formulario()
 
-        self.entrada_nombre.delete(0, tk.END)
-        self.entrada_nombre.insert(
-            0,
-            producto.nombre
-        )
+        self.entrada_codigo.insert(0, producto.codigo)
+        self.entrada_nombre.insert(0, producto.nombre)
+        self.entrada_precio.insert(0, str(producto.precio))
+        self.combo_categoria.set(producto.categoria)
+        self.entrada_stock.insert(0, str(producto.stock))
 
-        self.entrada_precio.delete(0, tk.END)
-        self.entrada_precio.insert(
-            0,
-            str(producto.precio)
-        )
-
-        self.combo_categoria.set(
-            producto.categoria
-        )
-
-        self.entrada_stock.delete(0, tk.END)
-        self.entrada_stock.insert(
-            0,
-            str(producto.stock)
-        )
-
-        messagebox.showinfo(
-            "Producto",
-            "Producto cargado correctamente."
-        )
+        messagebox.showinfo("Producto", "Producto cargado correctamente.")
 
     def actualizar_producto(self):
-        datos = self.obtener_datos_formulario()
-
         try:
             self.restaurante_servicio.actualizar_producto(
-                *datos
+                *self.obtener_datos_formulario()
             )
-
-            self.actualizar_tabla_productos()
-            self.limpiar_formulario()
-
-            messagebox.showinfo(
-                "Producto",
-                "Producto actualizado correctamente."
-            )
-
         except ValueError as error:
-            messagebox.showerror(
-                "Error",
-                str(error)
-            )
+            messagebox.showerror("Error", str(error))
+            return
+
+        self.actualizar_tabla_productos()
+        self.limpiar_formulario()
+        messagebox.showinfo("Producto", "Producto actualizado correctamente.")
 
     def eliminar_producto(self):
         codigo = self.entrada_codigo.get().strip()
 
         if not codigo:
-            messagebox.showwarning(
-                "Aviso",
-                "Ingrese el código del producto."
-            )
+            messagebox.showwarning("Aviso", "Ingrese el código del producto.")
             return
 
-        confirmar = messagebox.askyesno(
-            "Confirmar",
-            "¿Desea eliminar este producto?"
-        )
-
-        if not confirmar:
+        if not messagebox.askyesno("Confirmar", "¿Desea eliminar este producto?"):
             return
 
         try:
-            self.restaurante_servicio.eliminar_producto(
-                codigo
-            )
-
-            self.actualizar_tabla_productos()
-            self.limpiar_formulario()
-
-            messagebox.showinfo(
-                "Producto",
-                "Producto eliminado correctamente."
-            )
-
+            self.restaurante_servicio.eliminar_producto(codigo)
         except ValueError as error:
-            messagebox.showerror(
-                "Error",
-                str(error)
-            )
+            messagebox.showerror("Error", str(error))
+            return
+
+        self.actualizar_tabla_productos()
+        self.limpiar_formulario()
+        messagebox.showinfo("Producto", "Producto eliminado correctamente.")
 
     def limpiar_formulario(self):
         self.entrada_codigo.delete(0, tk.END)
@@ -577,128 +336,52 @@ class MainView:
         self.entrada_codigo.focus()
 
     def actualizar_tabla_productos(self):
-        for fila in self.tabla_productos.get_children():
-            self.tabla_productos.delete(fila)
-
-        productos = (
-            self.restaurante_servicio.listar_productos()
-        )
-
-        for producto in productos:
-            self.tabla_productos.insert(
-                "",
-                tk.END,
-                values=(
+        self.llenar_tabla(
+            self.tabla_productos,
+            [
+                (
                     producto.codigo,
                     producto.nombre,
                     f"${producto.precio:.2f}",
                     producto.categoria,
                     producto.stock
                 )
-            )
+                for producto in self.restaurante_servicio.listar_productos()
+            ]
+        )
+
+    # =========================================================
+    # USUARIOS
+    # =========================================================
 
     def mostrar_usuarios(self):
         self.limpiar_contenido()
+        self.crear_titulo("USUARIOS REGISTRADOS", espacio=15)
 
-        tk.Label(
-            self.frame_contenido,
-            text="USUARIOS REGISTRADOS",
-            font=("Arial", 17, "bold"),
-            bg="#f2f4f7",
-            fg="#1f4e78"
-        ).pack(pady=(0, 15))
-
-        listado = ttk.LabelFrame(
-            self.frame_contenido,
-            text="Consulta de usuarios",
-            padding=12
-        )
-        listado.pack(
-            fill="both",
-            expand=True
+        tabla_usuarios = self.crear_tabla(
+            "Consulta de usuarios",
+            [
+                ("identificacion", "Identificación", 150, "center"),
+                ("nombre", "Nombre", 220, "w"),
+                ("correo", "Correo", 280, "w")
+            ]
         )
 
-        columnas = (
-            "identificacion",
-            "nombre",
-            "correo"
+        self.llenar_tabla(
+            tabla_usuarios,
+            [
+                (usuario.identificacion, usuario.nombre, usuario.correo)
+                for usuario in self.restaurante_servicio.listar_usuarios()
+            ]
         )
 
-        tabla_usuarios = ttk.Treeview(
-            listado,
-            columns=columnas,
-            show="headings"
-        )
-
-        tabla_usuarios.heading(
-            "identificacion",
-            text="Identificación"
-        )
-        tabla_usuarios.heading(
-            "nombre",
-            text="Nombre"
-        )
-        tabla_usuarios.heading(
-            "correo",
-            text="Correo"
-        )
-
-        tabla_usuarios.column(
-            "identificacion",
-            width=150,
-            anchor="center"
-        )
-        tabla_usuarios.column(
-            "nombre",
-            width=220
-        )
-        tabla_usuarios.column(
-            "correo",
-            width=280
-        )
-
-        barra = ttk.Scrollbar(
-            listado,
-            orient="vertical",
-            command=tabla_usuarios.yview
-        )
-
-        tabla_usuarios.configure(
-            yscrollcommand=barra.set
-        )
-
-        tabla_usuarios.pack(
-            side="left",
-            fill="both",
-            expand=True
-        )
-        barra.pack(side="right", fill="y")
-
-        usuarios = (
-            self.restaurante_servicio.listar_usuarios()
-        )
-
-        for usuario in usuarios:
-            tabla_usuarios.insert(
-                "",
-                tk.END,
-                values=(
-                    usuario.identificacion,
-                    usuario.nombre,
-                    usuario.correo
-                )
-            )
+    # =========================================================
+    # VENTAS
+    # =========================================================
 
     def mostrar_ventas(self):
         self.limpiar_contenido()
-
-        tk.Label(
-            self.frame_contenido,
-            text="REGISTRO DE VENTAS",
-            font=("Arial", 17, "bold"),
-            bg="#f2f4f7",
-            fg="#1f4e78"
-        ).pack(pady=(0, 15))
+        self.crear_titulo("REGISTRO DE VENTAS", espacio=15)
 
         formulario = ttk.LabelFrame(
             self.frame_contenido,
@@ -707,88 +390,40 @@ class MainView:
         )
         formulario.pack(fill="x", pady=5)
 
-        ttk.Label(
-            formulario,
-            text="Usuario:"
-        ).grid(
-            row=0,
-            column=0,
-            padx=8,
-            pady=8,
-            sticky="w"
+        # Texto mostrado en el combobox -> identificador que usa el servicio
+        self.usuarios_venta = {
+            f"{usuario.identificacion} - {usuario.nombre}":
+                usuario.identificacion
+            for usuario in self.restaurante_servicio.listar_usuarios()
+        }
+        self.productos_venta = {
+            f"{producto.codigo} - {producto.nombre}": producto.codigo
+            for producto in self.restaurante_servicio.listar_productos()
+        }
+
+        ttk.Label(formulario, text="Usuario:").grid(
+            row=0, column=0, padx=8, pady=8, sticky="w"
         )
-
-        usuarios = (
-            self.restaurante_servicio.listar_usuarios()
-        )
-
-        self.usuarios_venta = {}
-
-        for usuario in usuarios:
-            texto = (
-                f"{usuario.identificacion} - "
-                f"{usuario.nombre}"
-            )
-            self.usuarios_venta[
-                texto
-            ] = usuario.identificacion
-
         self.combo_usuario_venta = ttk.Combobox(
             formulario,
-            values=list(
-                self.usuarios_venta.keys()
-            ),
+            values=list(self.usuarios_venta),
             state="readonly",
             width=35
         )
-        self.combo_usuario_venta.grid(
-            row=0,
-            column=1,
-            padx=8,
-            pady=8
+        self.combo_usuario_venta.grid(row=0, column=1, padx=8, pady=8)
+
+        ttk.Label(formulario, text="Producto:").grid(
+            row=1, column=0, padx=8, pady=8, sticky="w"
         )
-
-        ttk.Label(
-            formulario,
-            text="Producto:"
-        ).grid(
-            row=1,
-            column=0,
-            padx=8,
-            pady=8,
-            sticky="w"
-        )
-
-        productos = (
-            self.restaurante_servicio.listar_productos()
-        )
-
-        self.productos_venta = {}
-
-        for producto in productos:
-            texto = (
-                f"{producto.codigo} - "
-                f"{producto.nombre}"
-            )
-            self.productos_venta[
-                texto
-            ] = producto.codigo
-
         self.combo_producto_venta = ttk.Combobox(
             formulario,
-            values=list(
-                self.productos_venta.keys()
-            ),
+            values=list(self.productos_venta),
             state="readonly",
             width=35
         )
-        self.combo_producto_venta.grid(
-            row=1,
-            column=1,
-            padx=8,
-            pady=8
-        )
+        self.combo_producto_venta.grid(row=1, column=1, padx=8, pady=8)
 
+        # command= recibe el callback SIN paréntesis: se ejecuta al pulsar
         tk.Button(
             formulario,
             text="Registrar venta",
@@ -796,157 +431,64 @@ class MainView:
             bg="#27ae60",
             fg="white",
             command=self.registrar_venta
-        ).grid(
-            row=2,
-            column=0,
-            columnspan=2,
-            pady=12
-        )
+        ).grid(row=2, column=0, columnspan=2, pady=12)
 
-        listado = ttk.LabelFrame(
-            self.frame_contenido,
-            text="Ventas registradas",
-            padding=10
-        )
-        listado.pack(
-            fill="both",
-            expand=True,
-            pady=10
-        )
-
-        columnas = (
-            "usuario",
-            "producto",
-            "fecha"
-        )
-
-        self.tabla_ventas = ttk.Treeview(
-            listado,
-            columns=columnas,
-            show="headings",
-            height=12
-        )
-
-        self.tabla_ventas.heading(
-            "usuario",
-            text="Usuario"
-        )
-        self.tabla_ventas.heading(
-            "producto",
-            text="Producto"
-        )
-        self.tabla_ventas.heading(
-            "fecha",
-            text="Fecha"
-        )
-
-        self.tabla_ventas.column(
-            "usuario",
-            width=200
-        )
-        self.tabla_ventas.column(
-            "producto",
-            width=220
-        )
-        self.tabla_ventas.column(
-            "fecha",
-            width=160,
-            anchor="center"
-        )
-
-        barra = ttk.Scrollbar(
-            listado,
-            orient="vertical",
-            command=self.tabla_ventas.yview
-        )
-
-        self.tabla_ventas.configure(
-            yscrollcommand=barra.set
-        )
-
-        self.tabla_ventas.pack(
-            side="left",
-            fill="both",
-            expand=True
-        )
-        barra.pack(
-            side="right",
-            fill="y"
+        self.tabla_ventas = self.crear_tabla(
+            "Ventas registradas",
+            [
+                ("usuario", "Usuario", 200, "w"),
+                ("producto", "Producto", 220, "w"),
+                ("fecha", "Fecha", 160, "center")
+            ]
         )
 
         self.actualizar_tabla_ventas()
 
     def registrar_venta(self):
-        usuario_seleccionado = (
-            self.combo_usuario_venta.get()
-        )
+        """Callback del botón 'Registrar venta'.
 
-        producto_seleccionado = (
-            self.combo_producto_venta.get()
-        )
+        Obtiene las selecciones de la interfaz, delega la validación y el
+        registro en RestauranteServicio y actualiza la vista.
+        """
+        usuario_seleccionado = self.combo_usuario_venta.get()
+        producto_seleccionado = self.combo_producto_venta.get()
 
         if not usuario_seleccionado:
-            messagebox.showwarning(
-                "Aviso",
-                "Seleccione un usuario."
-            )
+            messagebox.showwarning("Aviso", "Seleccione un usuario.")
             return
 
         if not producto_seleccionado:
-            messagebox.showwarning(
-                "Aviso",
-                "Seleccione un producto."
-            )
+            messagebox.showwarning("Aviso", "Seleccione un producto.")
             return
-
-        identificacion = self.usuarios_venta[
-            usuario_seleccionado
-        ]
-
-        codigo_producto = self.productos_venta[
-            producto_seleccionado
-        ]
 
         try:
             self.restaurante_servicio.registrar_venta(
-                identificacion,
-                codigo_producto
+                self.usuarios_venta[usuario_seleccionado],
+                self.productos_venta[producto_seleccionado]
             )
-
-            self.actualizar_tabla_ventas()
-
-            self.combo_usuario_venta.set("")
-            self.combo_producto_venta.set("")
-
-            messagebox.showinfo(
-                "Venta",
-                "Venta registrada correctamente."
-            )
-
         except ValueError as error:
-            messagebox.showerror(
-                "Error",
-                str(error)
-            )
+            messagebox.showerror("Error", str(error))
+            return
+
+        self.actualizar_tabla_ventas()
+
+        self.combo_usuario_venta.set("")
+        self.combo_producto_venta.set("")
+
+        messagebox.showinfo("Venta", "Venta registrada correctamente.")
 
     def actualizar_tabla_ventas(self):
-        for fila in self.tabla_ventas.get_children():
-            self.tabla_ventas.delete(fila)
-
-        ventas = (
-            self.restaurante_servicio.listar_ventas()
+        self.llenar_tabla(
+            self.tabla_ventas,
+            [
+                (venta.usuario, venta.producto, venta.fecha)
+                for venta in self.restaurante_servicio.listar_ventas()
+            ]
         )
 
-        for venta in ventas:
-            self.tabla_ventas.insert(
-                "",
-                tk.END,
-                values=(
-                    venta.usuario,
-                    venta.producto,
-                    venta.fecha
-                )
-            )
+    # =========================================================
+    # CIERRE DE VISTA
+    # =========================================================
 
     def destruir(self):
         self.frame.destroy()

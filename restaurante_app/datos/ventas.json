@@ -1,1 +1,17 @@
-[]
+[
+    {
+        "usuario": "Dennis",
+        "producto": "Pizza",
+        "fecha": "2026-10-03 19:24"
+    },
+    {
+        "usuario": "Dennis",
+        "producto": "HAMBURGUESA",
+        "fecha": "2026-10-03 19:41"
+    },
+    {
+        "usuario": "Dennis",
+        "producto": "HAMBURGUESA",
+        "fecha": "2026-10-03 19:41"
+    }
+]

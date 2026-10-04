@@ -96,6 +96,8 @@ Cada venta almacena:
 - Producto.
 - Fecha del registro.
 
+El modelo `Venta` valida que estos tres datos no estén vacíos.
+
 Antes de registrar la venta, el servicio comprueba que el usuario y el producto seleccionados existan.
 
 Después de realizar correctamente la operación, la tabla de ventas se actualiza para mostrar el nuevo registro al usuario.
@@ -169,7 +171,7 @@ En la sección de Ventas se utilizan componentes de selección para escoger un u
 
 También incorporé la carpeta `assets`, donde se encuentran los recursos visuales utilizados por la aplicación:
 
-- Logo del Sistema de Restaurante.
+- Logo del Sistema de Restaurante (en la pantalla de acceso y en el encabezado).
 - Ícono de Productos.
 - Ícono de Usuarios.
 - Ícono de Ventas.
@@ -247,4 +249,4 @@ Con esta actividad pude comprender de una manera más práctica cómo funciona e
 
 Al presionar el botón **Registrar venta**, `command=` permite ejecutar un callback. Este callback obtiene la información seleccionada en la interfaz y solicita a `RestauranteServicio` que realice la operación. Después de registrar la venta, la información se guarda y la interfaz se actualiza para mostrar el resultado.
 
-También pude continuar mejorando el mismo proyecto que he venido desarrollando durante las semanas anteriores. En esta semana incorporé la gestión de ventas, la persistencia mediante `ventas.json` y los recursos visuales de la carpeta `assets`, manteniendo separadas la interfaz, la lógica del sistema y el manejo de los datos.
+También pude continuar mejorando el mismo proyecto que he venido desarrollando durante las semanas anteriores. En esta semana incorporé la gestión de ventas, la persistencia mediante `ventas.json` y los recursos visuales de la carpeta `assets`, manteniendo separadas la interfaz, la lógica del sistema y el manejo de los datos.
