@@ -1,43 +1,44 @@
-# Tarea Semana 15 - Manejo de eventos en restaurante_app
+# Sistema de Restaurante - Semana 15: Manejo de eventos con Tkinter
 
 ## Descripción
 
-En esta tarea de la Semana 15 continué trabajando en el Sistema de Restaurante que he venido desarrollando durante las semanas anteriores.
+En esta actividad continué desarrollando mi Sistema de Restaurante utilizando Python y Tkinter. El objetivo principal fue aplicar el manejo básico de eventos en una interfaz gráfica mediante botones y funciones callback.
 
-El objetivo principal de esta semana fue comprender y aplicar los fundamentos básicos del manejo de eventos utilizando Tkinter. Para poner en práctica este tema agregué una nueva sección de Ventas, donde se puede seleccionar un usuario y un producto que ya estén registrados y realizar una venta mediante un botón.
+Para realizar la práctica incorporé una sección de Ventas, donde se puede seleccionar un usuario y un producto que ya estén registrados y guardar la venta al presionar un botón.
 
-No realicé un proyecto nuevo desde cero. Continué trabajando sobre la aplicación de la semana anterior, conservando el inicio de sesión, la gestión de productos, la consulta de usuarios, la persistencia mediante archivos JSON y la organización del proyecto en diferentes módulos.
+Mantuve la organización del proyecto en módulos, el inicio de sesión, la gestión de productos, la consulta de usuarios y el almacenamiento de información mediante archivos JSON.
 
-## Evolución del proyecto
+## Funcionalidades del sistema
 
-En la versión anterior del sistema ya tenía implementado el inicio de sesión, la navegación principal, la gestión de productos y la consulta de usuarios.
+### Productos
 
-Para la Semana 15 continué con el mismo proyecto y agregué lo necesario para trabajar con ventas y manejo de eventos.
+- Registrar nuevos productos.
+- Consultar productos existentes.
+- Actualizar la información de los productos.
+- Eliminar productos registrados.
+- Visualizar los productos en una tabla.
 
-Los principales cambios realizados fueron:
+### Usuarios
 
-- Incorporación del modelo `Venta`.
-- Creación del archivo `ventas.json`.
-- Incorporación de una nueva sección de Ventas.
-- Selección de un usuario registrado.
-- Selección de un producto registrado.
-- Botón **Registrar venta**.
-- Uso de `command=` para relacionar el botón con un callback.
-- Registro de la venta mediante `RestauranteServicio`.
-- Visualización de las ventas registradas en una tabla.
-- Actualización de la tabla después de registrar una venta.
-- Persistencia de las ventas para recuperarlas al volver a ejecutar el programa.
-- Incorporación de la carpeta `assets` con el logo y los íconos utilizados por el sistema.
+- Consultar los usuarios registrados.
+- Visualizar la identificación, el nombre y el correo electrónico de cada usuario.
 
-De esta manera pude incorporar la nueva funcionalidad sin eliminar ni reemplazar las funciones que ya tenía desarrolladas.
+### Ventas
+
+- Seleccionar un usuario registrado.
+- Seleccionar un producto existente.
+- Registrar una venta mediante un botón.
+- Guardar el usuario, el producto y la fecha del registro.
+- Mostrar las ventas en una tabla.
+- Actualizar la tabla después de registrar una venta.
+- Conservar los registros al cerrar y volver a abrir el programa.
 
 ## Estructura del proyecto
 
-El proyecto mantiene una estructura modular para separar las diferentes responsabilidades del sistema.
+El sistema está organizado en carpetas para separar las diferentes responsabilidades de la aplicación.
 
 ```text
 restaurante_app/
-│
 ├── assets/
 │   ├── logo.png
 │   ├── logo_app.png
@@ -47,206 +48,165 @@ restaurante_app/
 │   ├── usuarios_icon.png
 │   ├── ventas.png
 │   └── ventas_icon.png
-│
 ├── datos/
 │   ├── productos.json
 │   ├── usuarios.json
 │   └── ventas.json
-│
 ├── modelos/
 │   ├── __init__.py
 │   ├── producto.py
 │   ├── usuario.py
 │   └── venta.py
-│
 ├── servicios/
 │   ├── __init__.py
 │   ├── archivo_servicio.py
 │   └── restaurante_servicio.py
-│
 ├── ui/
 │   ├── __init__.py
 │   ├── login_view.py
 │   └── main_view.py
-│
 └── main.py
 ```
 
-La carpeta `datos` contiene los archivos JSON utilizados para guardar la información del sistema.
+Las carpetas cumplen las siguientes funciones:
 
-En `modelos` se encuentran las clases principales: Producto, Usuario y Venta.
+- **modelos:** contiene las clases `Producto`, `Usuario` y `Venta`.
+- **servicios:** contiene las operaciones del sistema y los métodos para trabajar con los archivos JSON.
+- **ui:** contiene las ventanas y los componentes gráficos desarrollados con Tkinter.
+- **datos:** almacena la información de productos, usuarios y ventas.
+- **assets:** contiene el logotipo y los íconos utilizados en la aplicación.
+- **main.py:** es el archivo principal desde el cual se ejecuta el sistema.
 
-En `servicios` se encuentra la lógica utilizada para realizar las operaciones y trabajar con los datos.
+Esta organización me permitió incorporar el registro de ventas sin tener que desarrollar nuevamente toda la aplicación.
 
-En `ui` se encuentran las vistas y los componentes gráficos desarrollados con Tkinter.
+## Registro de ventas
 
-La carpeta `assets` contiene el logo y los íconos utilizados en la interfaz.
+La nueva sección de Ventas permite seleccionar un usuario y un producto que ya se encuentren registrados en el sistema.
 
-Finalmente, `main.py` es el punto de entrada utilizado para iniciar la aplicación.
+Para realizar una venta, primero se selecciona el usuario y después el producto mediante listas desplegables. Al presionar el botón **Registrar venta**, la aplicación comprueba los datos y guarda el registro.
 
-## Gestión de ventas
+Cada venta contiene:
 
-Para esta semana agregué una sección de Ventas que permite relacionar un usuario registrado con un producto existente.
+- Nombre del usuario.
+- Nombre del producto.
+- Fecha y hora del registro.
 
-Primero se selecciona el usuario y después el producto. Al presionar el botón **Registrar venta**, la interfaz obtiene estas selecciones y solicita a `RestauranteServicio` que realice la operación.
+Después de registrar la venta, la tabla se actualiza para mostrar la información ingresada.
 
-Cada venta almacena:
+## Manejo de eventos con Tkinter
 
-- Usuario.
-- Producto.
-- Fecha del registro.
+Para aplicar el tema estudiado utilicé la propiedad `command` de Tkinter, que permite relacionar un botón con una función.
 
-El modelo `Venta` valida que estos tres datos no estén vacíos.
-
-Antes de registrar la venta, el servicio comprueba que el usuario y el producto seleccionados existan.
-
-Después de realizar correctamente la operación, la tabla de ventas se actualiza para mostrar el nuevo registro al usuario.
-
-Las ventas también se guardan en `ventas.json`, por lo que pueden recuperarse cuando se cierra y se vuelve a ejecutar la aplicación.
-
-## Manejo de eventos
-
-En esta actividad utilicé `command=` de Tkinter para aplicar el fundamento de manejo de eventos estudiado durante la Semana 15.
-
-En el botón **Registrar venta** se utiliza:
+En el botón **Registrar venta** se utiliza la siguiente instrucción:
 
 ```python
 command=self.registrar_venta
 ```
 
-De esta manera, cuando el usuario presiona el botón se ejecuta el método `registrar_venta`, que funciona como callback.
+Cuando el usuario presiona el botón, se ejecuta el método `registrar_venta`, que funciona como callback.
 
-El callback obtiene el usuario y el producto seleccionados en la interfaz y solicita a `RestauranteServicio` que realice el registro.
+Este método obtiene el usuario y el producto seleccionados y llama a `RestauranteServicio` para realizar la operación.
 
-El flujo aplicado es:
+El proceso funciona de la siguiente manera:
 
-```text
-Usuario realiza una acción
-        ↓
-Botón Registrar venta
-        ↓
-command=
-        ↓
-Callback registrar_venta
-        ↓
-RestauranteServicio
-        ↓
-Persistencia en ventas.json
-        ↓
-Actualización de la tabla
-        ↓
-Respuesta en la interfaz
-```
+1. El usuario selecciona un usuario y un producto.
+2. Presiona el botón **Registrar venta**.
+3. Tkinter ejecuta el callback `registrar_venta`.
+4. El callback envía los datos a `RestauranteServicio`.
+5. El servicio comprueba que el usuario y el producto existan.
+6. Se registra la venta y se guarda en `ventas.json`.
+7. La tabla se actualiza y aparece un mensaje de confirmación.
 
-De esta forma la interfaz coordina la interacción con el usuario, mientras que las validaciones y la operación de la venta se mantienen dentro del servicio.
+De esta manera pude comprender cómo una acción realizada en la interfaz puede ejecutar una función y actualizar la información del programa.
 
-## Persistencia de las ventas
+## Persistencia de datos
 
-Las ventas registradas se almacenan en:
+Para almacenar la información utilicé archivos JSON:
 
-```text
-restaurante_app/datos/ventas.json
-```
+- `productos.json`: contiene los productos registrados.
+- `usuarios.json`: contiene los usuarios del sistema.
+- `ventas.json`: contiene las ventas realizadas.
 
-La interfaz no lee ni escribe directamente este archivo.
+La clase `ArchivoServicio` se encarga de leer y guardar los archivos JSON.
 
-La operación se delega a los servicios del sistema, manteniendo separada la interfaz de la lógica y de la persistencia de los datos.
+La interfaz no modifica directamente estos archivos, sino que utiliza los servicios del sistema.
 
-Cuando se registra una venta, la información queda almacenada en `ventas.json`. Al cerrar y volver a ejecutar la aplicación, las ventas guardadas se cargan nuevamente.
+Una vez registrada una venta, la información permanece guardada aunque se cierre el programa. Al volver a ejecutarlo, las ventas anteriores aparecen nuevamente en la tabla.
 
-## Interfaz gráfica
+## Interfaz gráfica y recursos visuales
 
-La aplicación utiliza Tkinter y ttk para construir la interfaz gráfica.
+La aplicación utiliza Tkinter y componentes `ttk` para mostrar formularios, botones, listas desplegables y tablas.
 
-Se mantienen las secciones desarrolladas anteriormente:
+El menú principal permite ingresar a las secciones de Productos, Usuarios y Ventas.
 
-- Productos.
-- Usuarios.
+También se utilizan recursos gráficos almacenados en la carpeta `assets`, entre ellos:
 
-Y para esta semana se incorporó:
-
-- Ventas.
-
-En la sección de Ventas se utilizan componentes de selección para escoger un usuario y un producto, un botón para registrar la operación y una tabla para visualizar las ventas realizadas.
-
-También incorporé la carpeta `assets`, donde se encuentran los recursos visuales utilizados por la aplicación:
-
-- Logo del Sistema de Restaurante (en la pantalla de acceso y en el encabezado).
+- Logotipo del Sistema de Restaurante.
 - Ícono de Productos.
 - Ícono de Usuarios.
 - Ícono de Ventas.
 
-Estos elementos permiten mantener una presentación más clara y organizada en las diferentes secciones del sistema.
+Estos recursos ayudan a identificar las diferentes secciones y a mantener una presentación ordenada.
 
-## Acceso a la aplicación
+## Requisitos para ejecutar el programa
 
-Para facilitar la revisión y prueba del proyecto se pueden utilizar las siguientes credenciales:
+- Tener instalado Python 3.
+- Contar con Tkinter, que normalmente viene incluido en Python para Windows.
 
-```text
-Usuario: Dennis
-Contraseña: 1234
-```
-
-Estas credenciales permiten ingresar a la aplicación y acceder a las secciones de Productos, Usuarios y Ventas.
+El proyecto no necesita instalar bibliotecas externas para sus funciones principales.
 
 ## Ejecución del programa
 
-Para ejecutar el proyecto se debe tener instalado Python 3.
+Primero se debe abrir una terminal en la carpeta principal del repositorio.
 
-Primero se debe abrir una terminal en la carpeta del repositorio:
+Desde esa ubicación se puede ejecutar:
 
-```text
-Tarea-Semana-15-Restaurante-Eventos
+```powershell
+python restaurante_app/main.py
 ```
 
-Después ingresar a la carpeta de la aplicación:
+Otra opción es ingresar a la carpeta de la aplicación:
 
 ```powershell
 cd restaurante_app
-```
-
-Finalmente ejecutar:
-
-```powershell
 python main.py
 ```
 
-También se puede ejecutar directamente desde la carpeta principal del repositorio utilizando:
+Al ejecutar el programa se abrirá la pantalla de inicio de sesión.
 
-```powershell
-python restaurante_app\main.py
-```
+## Acceso de prueba
 
-Al ejecutar `main.py` se abrirá la pantalla de acceso del Sistema de Restaurante.
+Para facilitar la revisión del proyecto, se pueden utilizar las siguientes credenciales de demostración:
 
-Después se pueden utilizar las credenciales indicadas anteriormente para ingresar y navegar por las secciones de Productos, Usuarios y Ventas.
+**Usuario:** Dennis
 
-## Pruebas realizadas
+**Contraseña:** 1234
 
-Para comprobar el funcionamiento del proyecto realicé las siguientes pruebas:
+Estas credenciales son únicamente para probar el funcionamiento de esta actividad y no deben utilizarse como datos de acceso reales.
 
-- Ejecución de `main.py`.
-- Inicio de sesión.
-- Navegación entre Productos, Usuarios y Ventas.
-- Consulta de los usuarios registrados.
-- Visualización y gestión de productos.
-- Selección de un usuario registrado para realizar una venta.
-- Selección de un producto registrado.
-- Registro mediante el botón **Registrar venta**.
-- Ejecución del callback mediante `command=`.
-- Validación de la operación mediante `RestauranteServicio`.
-- Actualización de la tabla después de registrar una venta.
-- Almacenamiento de la venta en `ventas.json`.
-- Cierre completo de la aplicación.
-- Nueva ejecución para comprobar la persistencia de las ventas.
-- Visualización del logo y los íconos almacenados en `assets`.
+Después de iniciar sesión se puede acceder a las secciones de Productos, Usuarios y Ventas.
 
-Estas pruebas me permitieron comprobar que las funciones desarrolladas anteriormente continúan trabajando y que la nueva sección de Ventas se encuentra integrada al sistema.
+## Pruebas de funcionamiento
+
+Durante la revisión del proyecto realicé las siguientes comprobaciones:
+
+- Ejecuté el programa y comprobé que la ventana principal se abriera correctamente.
+- Ingresé utilizando las credenciales de prueba.
+- Accedí a la sección de Ventas.
+- Seleccioné un usuario y un producto existentes.
+- Registré una venta mediante el botón correspondiente.
+- Comprobé que la venta apareciera en la tabla.
+- Cerré completamente el programa y volví a ejecutarlo.
+- Verifiqué que la venta registrada continuara almacenada y apareciera nuevamente.
+
+Estas pruebas me permitieron comprobar el funcionamiento del registro de ventas y su almacenamiento en archivos JSON.
 
 ## Conclusión
 
-Con esta actividad pude comprender de una manera más práctica cómo funciona el manejo básico de eventos en una interfaz gráfica.
+Con esta actividad pude comprender mejor el manejo de eventos en Tkinter y la importancia de utilizar funciones callback para responder a las acciones del usuario.
 
-Al presionar el botón **Registrar venta**, `command=` permite ejecutar un callback. Este callback obtiene la información seleccionada en la interfaz y solicita a `RestauranteServicio` que realice la operación. Después de registrar la venta, la información se guarda y la interfaz se actualiza para mostrar el resultado.
+La incorporación de la sección de Ventas me permitió relacionar los componentes gráficos con los servicios del sistema, registrar información y actualizar una tabla después de realizar una operación.
 
-También pude continuar mejorando el mismo proyecto que he venido desarrollando durante las semanas anteriores. En esta semana incorporé la gestión de ventas, la persistencia mediante `ventas.json` y los recursos visuales de la carpeta `assets`, manteniendo separadas la interfaz, la lógica del sistema y el manejo de los datos.
+También reforcé mis conocimientos sobre programación orientada a objetos, organización modular y persistencia de datos mediante archivos JSON.
+
+Considero que esta práctica fue útil porque me permitió aplicar lo aprendido en una aplicación funcional y seguir mejorando la estructura de mi proyecto.
